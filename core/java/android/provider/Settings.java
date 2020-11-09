@@ -11659,6 +11659,12 @@ public final class Settings {
                 String provider, boolean enabled) {
         }
 
+       /**
+         * Immersive Navigation gesture
+         * @hide
+         */
+        public static final String IMMERSIVE_NAVIGATION = "immersive_navigation";
+
         /** Whether to allow one finger quick settings expansion on the right side of the statusbar.
          *
          * @hide

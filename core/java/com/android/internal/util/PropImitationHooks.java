@@ -154,7 +154,7 @@ public class PropImitationHooks {
         }
     }
 
-    private static void setPropValue(String key, Object value) {
+    static void setPropValue(String key, Object value) {
         try {
             dlog("Setting prop " + key + " to " + value.toString());
             Field field = Build.class.getDeclaredField(key);
@@ -166,7 +166,7 @@ public class PropImitationHooks {
         }
     }
 
-    private static void setCertifiedPropsForGms() {
+    static void setCertifiedPropsForGms() {
         if (sCertifiedProps.length != 4) {
             Log.e(TAG, "Insufficient array size for certified props: "
                     + sCertifiedProps.length + ", required 4");

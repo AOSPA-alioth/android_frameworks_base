@@ -135,4 +135,11 @@
     <!-- Enforce DisplayModeDirector to select user preferred resolution -->
     <bool name="config_forceToUseSelectedResolution">false</bool>
 
+    <!-- Device model (Build.MODEL) to spoof for netflix, if not empty -->
+    <string name="config_netflixSpoofModel" translatable="false"></string>
+
+    <!-- Whether to spoof device as pixel for certain google apps, to
+         unlock pixel-exclusive features -->
+    <bool name="config_spoofGoogleApps">false</bool>
+
 </resources>

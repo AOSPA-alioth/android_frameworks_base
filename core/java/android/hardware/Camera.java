@@ -17,7 +17,12 @@
 package android.hardware;
 
 import static android.system.OsConstants.EACCES;
+import static android.system.OsConstants.EBUSY;
+import static android.system.OsConstants.EINVAL;
 import static android.system.OsConstants.ENODEV;
+import static android.system.OsConstants.ENOSYS;
+import static android.system.OsConstants.EOPNOTSUPP;
+import static android.system.OsConstants.EUSERS;
 
 import android.annotation.Nullable;
 import android.annotation.SdkConstant;
@@ -26,6 +31,7 @@ import android.app.ActivityThread;
 import android.app.AppOpsManager;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -60,6 +66,7 @@ import com.android.internal.app.IAppOpsService;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -278,6 +285,34 @@ public class Camera {
     private static final int CAMERA_FACE_DETECTION_SW = 1;
 
     /**
+     * @hide
+     */
+    public static boolean shouldExposeAuxCamera() {
+        /**
+         * Force to expose only two cameras
+         * if the package name does not falls in this bucket
+         */
+        String packageName = ActivityThread.currentOpPackageName();
+        if (packageName == null) {
+            return true;
+        }
+        List<String> packageList = new ArrayList<>(Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packagelist", ",").split(",")));
+        List<String> packageExcludelist = new ArrayList<>(Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packageexcludelist", ",").split(",")));
+
+        // Append packages from framework resources
+        Resources res = ActivityThread.currentApplication().getResources();
+        packageList.addAll(Arrays.asList(res.getStringArray(
+                com.android.internal.R.array.config_cameraAuxPackageAllowList)));
+        packageExcludelist.addAll(Arrays.asList(res.getStringArray(
+                com.android.internal.R.array.config_cameraAuxPackageExcludeList)));
+
+        return (packageList.isEmpty() || packageList.contains(packageName)) &&
+                !packageExcludelist.contains(packageName);
+    }
+
+    /**
      * Returns the number of physical cameras available on this device.
      * The return value of this method might change dynamically if the device
      * supports external cameras and an external camera is connected or
@@ -293,24 +328,8 @@ public class Camera {
      *   cameras or an error was encountered enumerating them.
      */
     public static int getNumberOfCameras() {
-        boolean exposeAuxCamera = false;
-        String packageName = ActivityThread.currentOpPackageName();
-        /* Force to expose only two cameras
-         * if the package name does not falls in this bucket
-         */
-        String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
-        if (packageList.length() > 0) {
-            TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
-            splitter.setString(packageList);
-            for (String str : splitter) {
-                if (packageName.equals(str)) {
-                    exposeAuxCamera = true;
-                    break;
-                }
-            }
-        }
         int numberOfCameras = _getNumberOfCameras();
-        if (exposeAuxCamera == false && (numberOfCameras > 2)) {
+        if (!shouldExposeAuxCamera() && numberOfCameras > 2) {
             numberOfCameras = 2;
         }
         return numberOfCameras;

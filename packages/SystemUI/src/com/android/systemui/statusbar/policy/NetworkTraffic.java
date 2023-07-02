@@ -47,8 +47,6 @@ public class NetworkTraffic extends TextView {
     private static final int GB = MB * KB;
     private static final String symbol = "/s";
 
-    private final int mWidth;
-
     protected boolean mIsEnabled;
     private boolean mAttached;
     private long totalRxBytes;
@@ -86,7 +84,7 @@ public class NetworkTraffic extends TextView {
 
             if (shouldHide(rxData, txData, timeDelta)) {
                 setText("");
-                setVisibility(View.INVISIBLE);
+                setVisibility(View.GONE);
                 mVisible = false;
             } else if (shouldShowUpload(rxData, txData, timeDelta)) {
                 // Show information for uplink if it's called for
@@ -96,7 +94,6 @@ public class NetworkTraffic extends TextView {
                 if (output != getText()) {
                     setText(output);
                 }
-                makeVisible();
             } else {
                 // Add information for downlink if it's called for
                 CharSequence output = formatOutput(timeDelta, rxData, symbol);
@@ -128,7 +125,7 @@ public class NetworkTraffic extends TextView {
             SpannableString spanUnitString;
             SpannableString spanSpeedString;
 
-            if (speed >= 1000 * MB) {
+            if (speed >= GB) {
                 unit = "GB";
                 decimalFormat = new DecimalFormat("0.00");
                 formatSpeed =  decimalFormat.format(speed / (float)GB);
@@ -140,7 +137,7 @@ public class NetworkTraffic extends TextView {
                 decimalFormat = new DecimalFormat("00.0");
                 unit = "MB";
                 formatSpeed =  decimalFormat.format(speed / (float)MB);
-            } else if (speed >= 1000 * KB) {
+            } else if (speed >= MB) {
                 decimalFormat = new DecimalFormat("0.00");
                 unit = "MB";
                 formatSpeed =  decimalFormat.format(speed / (float)MB);
@@ -177,7 +174,7 @@ public class NetworkTraffic extends TextView {
 
         private boolean shouldShowUpload(long rxData, long txData, long timeDelta) {
             long speedRxKB = (long)(rxData / (timeDelta / 1000f)) / KB;
-            long speedTxKB = (long)(txData / (timeDelta / 1000f)) / KB;
+                long speedTxKB = (long)(txData / (timeDelta / 1000f)) / KB;
 
             return (speedTxKB > speedRxKB);
         }
@@ -213,7 +210,6 @@ public class NetworkTraffic extends TextView {
         super(context, attrs, defStyle);
         final Resources resources = getResources();
         mTintColor = getCurrentTextColor();
-        mWidth = resources.getDimensionPixelSize(R.dimen.network_traffic_width);
         setMode();
         Handler mHandler = new Handler();
         mConnectivityManager =
@@ -315,11 +311,10 @@ public class NetworkTraffic extends TextView {
                 lastUpdateTime = SystemClock.elapsedRealtime();
                 mTrafficHandler.sendEmptyMessage(1);
             }
-            if (mAutoHideThreshold == 0)
-                makeVisible();
             return;
+        } else {
+            clearHandlerCallbacks();
         }
-        clearHandlerCallbacks();
         setVisibility(View.GONE);
         mVisible = false;
     }
@@ -336,7 +331,8 @@ public class NetworkTraffic extends TextView {
         setMaxLines(2);
         setSpacingAndFonts();
         updateTrafficDrawable();
-        setWidth(mWidth);
+        setVisibility(View.GONE);
+        mVisible = false;
     }
 
     private void clearHandlerCallbacks() {

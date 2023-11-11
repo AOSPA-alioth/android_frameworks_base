@@ -91,10 +91,11 @@ class PulsingGestureListener @Inject constructor(
             override fun onChange(selfChange: Boolean) = update()
 
             fun update() {
-                customDoubleTapEnabled = systemSettings.getIntForUser(GESTURE_DOUBLE_TAP,
+                val customDoubleTap = systemSettings.getIntForUser(GESTURE_DOUBLE_TAP,
                         context.resources.getInteger(
                             com.android.internal.R.integer.config_doubleTapDefault),
-                        UserHandle.USER_CURRENT) == 1
+                        UserHandle.USER_CURRENT)
+                customDoubleTapEnabled = customDoubleTap == 1 || customDoubleTap == 2
             }
         }
         systemSettings.registerContentObserverForUser(

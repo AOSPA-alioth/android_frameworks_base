@@ -4367,11 +4367,12 @@ public final class NotificationPanelViewController implements Dumpable {
         public void update() {
             mDoubleTapToSleepEnabled = Settings.System.getIntForUser(mContentResolver,
                     DOUBLE_TAP_SLEEP_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
-            mDoubleTapToWakeEnabled = Settings.System.getIntForUser(
+            final int doubleTapVal = Settings.System.getIntForUser(
                     mView.getContext().getContentResolver(), Settings.System.GESTURE_DOUBLE_TAP,
                     mView.getContext().getResources().getInteger(
                         com.android.internal.R.integer.config_doubleTapDefault),
-                    UserHandle.USER_CURRENT) == 1;
+                    UserHandle.USER_CURRENT);
+            mDoubleTapToWakeEnabled = doubleTapVal == 1 || doubleTapVal == 2;
         }
     }
 

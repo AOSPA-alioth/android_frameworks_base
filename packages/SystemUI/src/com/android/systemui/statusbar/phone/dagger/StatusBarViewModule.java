@@ -71,6 +71,9 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.window.StatusBarWindowStateController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.CarrierConfigTracker;
+import com.android.systemui.util.settings.SecureSettings;
+
+import java.util.concurrent.Executor;
 
 import javax.inject.Named;
 
@@ -292,6 +295,8 @@ public abstract class StatusBarViewModule {
             CarrierConfigTracker carrierConfigTracker,
             CollapsedStatusBarFragmentLogger collapsedStatusBarFragmentLogger,
             OperatorNameViewController.Factory operatorNameViewControllerFactory,
+            SecureSettings secureSettings,
+            @Main Executor mainExecutor,
             DumpManager dumpManager,
             StatusBarWindowStateController statusBarWindowStateController,
             KeyguardUpdateMonitor keyguardUpdateMonitor
@@ -313,6 +318,8 @@ public abstract class StatusBarViewModule {
                 carrierConfigTracker,
                 collapsedStatusBarFragmentLogger,
                 operatorNameViewControllerFactory,
+                secureSettings,
+                mainExecutor,
                 dumpManager,
                 statusBarWindowStateController,
                 keyguardUpdateMonitor);

@@ -88,16 +88,28 @@ public class GamesPropsUtils {
 
         propsToChange.put("ROG6", createROG6Props());
         packagesToChange.put("ROG6", new String[]{
-                "com.activision.callofduty.shooter",
                 "com.madfingergames.legends"
+        });
+
+        propsToChange.put("LNV", createLNVProps());
+        packagesToChange.put("LNV", new String[]{
+		"com.garena.game.codm",
+                "com.activision.callofduty.shooter"
         });
 
         propsToChange.put("XP5", createXP5Props());
         packagesToChange.put("XP5", new String[]{
                 "com.tencent.tmgp.kr.codm",
-                "com.garena.game.codm",
                 "com.vng.codmvn"
         });
+    }
+
+    private static Map<String, Object> createLNVProps() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("BRAND", "lenovo");
+        props.put("MANUFACTURER", "lenovo");
+        props.put("MODEL", "Lenovo TB-9707F");
+        return props;
     }
 
     private static Map<String, Object> createBS4Props() {

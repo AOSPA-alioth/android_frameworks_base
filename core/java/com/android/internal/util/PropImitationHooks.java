@@ -59,6 +59,7 @@ public class PropImitationHooks {
     private static final String PACKAGE_FINSKY = "com.android.vending";
     private static final String PACKAGE_GBOARD = "com.google.android.inputmethod.latin";
     private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PACKAGE_GOOGLE_ONE = "com.google.android.apps.subscriptions.red";
     private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
     private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
     private static final String PACKAGE_VELVET = "com.google.android.googlequicksearchbox";
@@ -72,22 +73,31 @@ public class PropImitationHooks {
     private static final String FEATURE_NEXUS_PRELOAD =
             "com.google.android.apps.photos.NEXUS_PRELOAD";
 
-    private static final Map<String, Object> sPixelProps = Map.of(
-        "BRAND", "google",
-        "MANUFACTURER", "Google",
-        "DEVICE", "redfin",
+    private static final Map<String, String> sPixelFiveProps = Map.of(
         "PRODUCT", "redfin",
+        "DEVICE", "redfin",
+        "MANUFACTURER", "Google",
+        "BRAND", "google",
         "MODEL", "Pixel 5",
-        "FINGERPRINT", "google/redfin/redfin:13/TQ3A.230705.001/10216780:user/release-keys"
+        "FINGERPRINT", "google/redfin/redfin:13/TQ3A.230901.001/10750268:user/release-keys"
     );
 
-    private static final Map<String, Object> sPixelXLProps = Map.of(
+    private static final Map<String, String> sPixelFoldProps = Map.of(
         "BRAND", "google",
         "MANUFACTURER", "Google",
-        "DEVICE", "marlin",
-        "PRODUCT", "marlin",
-        "MODEL", "Pixel XL",
-        "FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys"
+        "DEVICE", "felix",
+        "PRODUCT", "felix",
+        "MODEL", "Pixel Fold",
+        "FINGERPRINT", "google/felix/felix:13/TQ3C.230901.001.B1/10750989:user/release-keys"
+    );
+
+    private static final Map<String, String> sPixelOneProps = Map.of(
+        "PRODUCT", "sailfish",
+        "DEVICE", "sailfish",
+        "MANUFACTURER", "Google",
+        "BRAND", "google",
+        "MODEL", "Pixel",
+        "FINGERPRINT", "google/sailfish/sailfish:10/QP1A.191005.007.A3/5972272:user/release-keys"
     );
 
     private static final Set<String> sPixelFeatures = Set.of(
@@ -133,10 +143,13 @@ public class PropImitationHooks {
                 || (packageName.equals(PACKAGE_GMS)
                     && processName.equals(PROCESS_GMS_PERSISTENT)))) {
             dlog("Spoofing Pixel 5 for: " + packageName + " process: " + processName);
-            sPixelProps.forEach(PropImitationHooks::setPropValue);
+            sPixelFiveProps.forEach(PropImitationHooks::setPropValue);
+        } else if (packageName.equals(PACKAGE_GOOGLE_ONE)) {
+            dlog("Spoofing Pixel Fold for Google One");
+            sPixelFoldProps.forEach(PropImitationHooks::setPropValue);
         } else if (sIsPhotos) {
-            dlog("Spoofing Pixel XL for Google Photos");
-            sPixelXLProps.forEach((PropImitationHooks::setPropValue));
+            dlog("Spoofing Pixel 1 for Google Photos");
+            sPixelOneProps.forEach((PropImitationHooks::setPropValue));
         } else if (!sNetflixModel.isEmpty() && packageName.equals(PACKAGE_NETFLIX)) {
             dlog("Setting model to " + sNetflixModel + " for Netflix");
             setPropValue("MODEL", sNetflixModel);
